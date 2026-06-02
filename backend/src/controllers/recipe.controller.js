@@ -1,4 +1,8 @@
 const Recipe = require("../models/Recipe");
+const {
+  attachAverageRatingToRecipe,
+  getAverageRatingsByRecipeIds
+} = require("../utils/rating.helper");
 
 const listRecipes = async (req, res) => {
   try {
@@ -16,7 +20,15 @@ const listRecipes = async (req, res) => {
       .populate("autorId", "nombre email avatarUrl")
       .sort({ createdAt: -1 });
 
-    return res.status(200).json({ recipes });
+    const ratingsMap = await getAverageRatingsByRecipeIds(
+      recipes.map((recipe) => recipe._id)
+    );
+
+    const recipesWithRatings = recipes.map((recipe) =>
+      attachAverageRatingToRecipe(recipe, ratingsMap.get(recipe._id.toString()))
+    );
+
+    return res.status(200).json({ recipes: recipesWithRatings });
   } catch (error) {
     return res.status(500).json({ message: "Error al obtener las recetas", error: error.message });
   }
@@ -81,7 +93,13 @@ const getRecipeById = async (req, res) => {
       return res.status(404).json({ message: "Receta no encontrada" });
     }
 
-    return res.status(200).json({ recipe });
+    const ratingsMap = await getAverageRatingsByRecipeIds([recipe._id]);
+    const recipeWithRating = attachAverageRatingToRecipe(
+      recipe,
+      ratingsMap.get(recipe._id.toString())
+    );
+
+    return res.status(200).json({ recipe: recipeWithRating });
   } catch (error) {
     return res.status(500).json({ message: "Error al obtener la receta", error: error.message });
   }

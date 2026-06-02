@@ -1,4 +1,18 @@
-require("dotenv").config();
+const fs = require("fs");
+const path = require("path");
+const dotenv = require("dotenv");
+
+const envPaths = [
+  path.resolve(__dirname, "../../../.env"),
+  path.resolve(__dirname, "../../.env")
+];
+
+for (const envPath of envPaths) {
+  if (fs.existsSync(envPath)) {
+    dotenv.config({ path: envPath });
+    break;
+  }
+}
 
 const env = {
   port: process.env.PORT || 4000,

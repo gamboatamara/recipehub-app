@@ -25,7 +25,7 @@ const buildUserResponse = (user) => {
 
 const register = async (req, res) => {
   try {
-    const { nombre, email, password, bio, avatarUrl } = req.body;
+    const { nombre, email, password, bio, avatarUrl } = req.body || {};
 
     if (!nombre || !email || !password) {
       return res.status(400).json({
@@ -70,7 +70,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = req.body || {};
 
     if (!email || !password) {
       return res.status(400).json({
