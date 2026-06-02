@@ -142,8 +142,15 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 
-node_modules/
-.env
-.DS_Store
-dist/
-coverage/
+# Project specific
+backend/.env
+frontend/.env
+
+backend/node_modules/
+frontend/node_modules/
+
+backend/dist/
+frontend/dist/
+
+# This project uses pnpm
+package-lock.json
