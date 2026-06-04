@@ -1,16 +1,14 @@
 import { Link } from "react-router-dom";
 
+import RecipeImage from "./RecipeImage";
+
 const RecipeCard = ({ recipe }) => {
   const rating = recipe.averageRating ? Number(recipe.averageRating).toFixed(1) : "Sin rating";
   const authorName = recipe.autorId?.nombre || "Autor";
 
   return (
     <article className="recipe-card">
-      {recipe.imagenUrl ? (
-        <img src={recipe.imagenUrl} alt={recipe.titulo} />
-      ) : (
-        <div className="image-placeholder">{recipe.categoria}</div>
-      )}
+      <RecipeImage imageUrl={recipe.imagenUrl} label={recipe.categoria} title={recipe.titulo} />
 
       <div className="card-body">
         <div className="meta-row">

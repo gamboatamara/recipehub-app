@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
+import RecipeImage from "../components/RecipeImage";
 import { useAuth } from "../hooks/useAuth";
 import { commentService, recipeService } from "../services/api";
 
@@ -143,11 +144,12 @@ const RecipeDetailPage = () => {
           )}
         </div>
 
-        {recipe.imagenUrl ? (
-          <img src={recipe.imagenUrl} alt={recipe.titulo} />
-        ) : (
-          <div className="detail-placeholder">{recipe.categoria}</div>
-        )}
+        <RecipeImage
+          className="detail-image"
+          imageUrl={recipe.imagenUrl}
+          label={recipe.categoria}
+          title={recipe.titulo}
+        />
       </section>
 
       <section className="content-columns">

@@ -3,7 +3,37 @@ import { useEffect, useMemo, useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 import { recipeService } from "../services/api";
 
-const CATEGORIES = ["", "Desayuno", "Almuerzo", "Cena", "Postre", "Merienda", "Entrada", "Bebida"];
+const CATEGORY_TILES = [
+  {
+    label: "Desayuno",
+    image: "https://images.unsplash.com/photo-1493770348161-369560ae357d?auto=format&fit=crop&w=320&q=80"
+  },
+  {
+    label: "Almuerzo",
+    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=320&q=80"
+  },
+  {
+    label: "Cena",
+    image: "https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?auto=format&fit=crop&w=320&q=80"
+  },
+  {
+    label: "Postre",
+    image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=320&q=80"
+  },
+  {
+    label: "Merienda",
+    image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=320&q=80"
+  },
+  {
+    label: "Entrada",
+    image: "https://images.unsplash.com/photo-1541014741259-de529411b96a?auto=format&fit=crop&w=320&q=80"
+  },
+  {
+    label: "Bebida",
+    image: "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=320&q=80"
+  }
+];
+
 const DIFFICULTIES = ["", "Fácil", "Media", "Difícil"];
 
 const HomePage = () => {
@@ -45,54 +75,84 @@ const HomePage = () => {
     });
   }, [recipes, filters.search]);
 
+  const topRecipes = useMemo(
+    () =>
+      [...visibleRecipes]
+        .sort((first, second) => Number(second.averageRating || 0) - Number(first.averageRating || 0))
+        .slice(0, 10),
+    [visibleRecipes]
+  );
+
   const updateFilter = (field, value) => {
     setFilters((current) => ({ ...current, [field]: value }));
   };
 
   return (
-    <main className="page">
-      <section className="hero-panel">
-        <div>
+    <main className="home-page">
+      <section className="home-hero">
+        <div className="hero-copy">
           <p className="eyebrow">Recetas compartidas por la comunidad</p>
-          <h1>Encuentra tu proxima receta favorita</h1>
-          <p>
-            Busca por titulo o tag, filtra por categoria y dificultad, y guarda nuevas recetas con
-            ingredientes y pasos ordenados.
-          </p>
+          <h1>¿Que quieres cocinar hoy?</h1>
+          <p>Explora ideas por categoria, dificultad o palabra clave y guarda tus propias recetas.</p>
+
+          <div className="hero-search" role="search">
+            <input
+              aria-label="Buscar receta por titulo o tag"
+              placeholder="Busca una receta, ingrediente o palabra clave..."
+              value={filters.search}
+              onChange={(event) => updateFilter("search", event.target.value)}
+            />
+            <button className="button primary" type="button">
+              Buscar
+            </button>
+          </div>
+        </div>
+
+        <aside className="hero-feature-card">
+          <span>Tip del dia</span>
+          <h2>Mejores decisiones al comer</h2>
+          <p>Organiza tus recetas con ingredientes claros, pasos simples y categorias faciles de filtrar.</p>
+        </aside>
+      </section>
+
+      <section className="category-strip" aria-label="Categorias de recetas">
+        <div className="home-section-title">
+          <p className="eyebrow">¿Que quieres cocinar?</p>
+          <button
+            className={`category-clear ${!filters.categoria ? "active" : ""}`}
+            type="button"
+            onClick={() => updateFilter("categoria", "")}
+          >
+            Ver todas
+          </button>
+        </div>
+
+        <div className="category-rail">
+          {CATEGORY_TILES.map((category) => (
+            <button
+              className={`category-tile ${filters.categoria === category.label ? "active" : ""}`}
+              key={category.label}
+              type="button"
+              onClick={() => updateFilter("categoria", category.label)}
+            >
+              <img src={category.image} alt={category.label} />
+              <span>{category.label}</span>
+            </button>
+          ))}
         </div>
       </section>
 
-      <section className="toolbar" aria-label="Filtros de recetas">
-        <label>
-          Buscar
-          <input
-            placeholder="Titulo o tag"
-            value={filters.search}
-            onChange={(event) => updateFilter("search", event.target.value)}
-          />
-        </label>
-
-        <label>
-          Categoria
-          <select value={filters.categoria} onChange={(event) => updateFilter("categoria", event.target.value)}>
-            {CATEGORIES.map((category) => (
-              <option key={category || "all"} value={category}>
-                {category || "Todas"}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label>
-          Dificultad
-          <select value={filters.dificultad} onChange={(event) => updateFilter("dificultad", event.target.value)}>
-            {DIFFICULTIES.map((difficulty) => (
-              <option key={difficulty || "all"} value={difficulty}>
-                {difficulty || "Todas"}
-              </option>
-            ))}
-          </select>
-        </label>
+      <section className="difficulty-filter" aria-label="Filtro por dificultad">
+        {DIFFICULTIES.map((difficulty) => (
+          <button
+            className={filters.dificultad === difficulty ? "active" : ""}
+            key={difficulty || "all"}
+            type="button"
+            onClick={() => updateFilter("dificultad", difficulty)}
+          >
+            {difficulty || "Todas las dificultades"}
+          </button>
+        ))}
       </section>
 
       {error && <p className="alert error">{error}</p>}
@@ -104,6 +164,32 @@ const HomePage = () => {
           <p>Prueba con otra busqueda o cambia la categoria.</p>
         </section>
       )}
+
+      {!!topRecipes.length && (
+        <section className="featured-section">
+          <div className="home-section-title">
+            <div>
+              <p className="eyebrow">Top recetas</p>
+              <h2>Las mejor valoradas</h2>
+            </div>
+            <span>{topRecipes.length} recetas</span>
+          </div>
+
+          <div className="featured-rail">
+            {topRecipes.map((recipe) => (
+              <RecipeCard key={`top-${recipe._id}`} recipe={recipe} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="home-section-title">
+        <div>
+          <p className="eyebrow">Explorar</p>
+          <h2>Todas las recetas</h2>
+        </div>
+        <span>{visibleRecipes.length} resultados</span>
+      </section>
 
       <section className="recipe-grid">
         {visibleRecipes.map((recipe) => (

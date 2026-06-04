@@ -183,6 +183,7 @@ const RecipeForm = ({ initialRecipe, isSubmitting, onSubmit, submitLabel }) => {
         URL de imagen
         <input
           type="url"
+          placeholder="https://ejemplo.com/imagen.jpg"
           value={form.imagenUrl}
           onChange={(event) => updateField("imagenUrl", event.target.value)}
         />
