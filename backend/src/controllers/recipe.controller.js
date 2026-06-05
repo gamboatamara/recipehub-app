@@ -3,6 +3,18 @@ const {
   attachAverageRatingToRecipe,
   getAverageRatingsByRecipeIds
 } = require("../utils/rating.helper");
+const {
+  deleteRecipeImage,
+  uploadRecipeImageFromUrl
+} = require("../utils/cloudinary.helper");
+
+const deleteCloudinaryImageIfExists = async (publicId) => {
+  try {
+    await deleteRecipeImage(publicId);
+  } catch (error) {
+    console.warn("No se pudo eliminar la imagen anterior de Cloudinary:", error.message);
+  }
+};
 
 const listRecipes = async (req, res) => {
   try {
@@ -61,6 +73,8 @@ const createRecipe = async (req, res) => {
       return res.status(400).json({ message: "Debe incluir al menos un paso" });
     }
 
+    const uploadedImage = await uploadRecipeImageFromUrl(imagenUrl);
+
     const recipe = await Recipe.create({
       titulo,
       descripcion,
@@ -72,13 +86,20 @@ const createRecipe = async (req, res) => {
       pasos,
       tags: tags || [],
       autorId: req.user._id,
-      imagenUrl: imagenUrl || ""
+      imagenUrl: uploadedImage.secureUrl,
+      imagenPublicId: uploadedImage.publicId
     });
 
     return res.status(201).json({ message: "Receta creada exitosamente", recipe });
   } catch (error) {
     if (error.name === "ValidationError") {
       return res.status(400).json({ message: error.message });
+    }
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({
+        message: error.message,
+        ...(error.details ? { error: error.details } : {})
+      });
     }
     return res.status(500).json({ message: "Error al crear la receta", error: error.message });
   }
@@ -128,16 +149,33 @@ const updateRecipe = async (req, res) => {
       if (req.body[field] !== undefined) updates[field] = req.body[field];
     });
 
+    if (req.body.imagenUrl !== undefined) {
+      const uploadedImage = await uploadRecipeImageFromUrl(req.body.imagenUrl);
+
+      updates.imagenUrl = uploadedImage.secureUrl;
+      updates.imagenPublicId = uploadedImage.publicId;
+    }
+
     const updated = await Recipe.findByIdAndUpdate(
       req.params.id,
       updates,
       { new: true, runValidators: true }
     ).populate("autorId", "nombre email avatarUrl");
 
+    if (req.body.imagenUrl !== undefined && recipe.imagenPublicId) {
+      await deleteCloudinaryImageIfExists(recipe.imagenPublicId);
+    }
+
     return res.status(200).json({ message: "Receta actualizada exitosamente", recipe: updated });
   } catch (error) {
     if (error.name === "ValidationError") {
       return res.status(400).json({ message: error.message });
+    }
+    if (error.statusCode) {
+      return res.status(error.statusCode).json({
+        message: error.message,
+        ...(error.details ? { error: error.details } : {})
+      });
     }
     return res.status(500).json({ message: "Error al actualizar la receta", error: error.message });
   }
@@ -156,6 +194,10 @@ const deleteRecipe = async (req, res) => {
     }
 
     await Recipe.findByIdAndDelete(req.params.id);
+
+    if (recipe.imagenPublicId) {
+      await deleteCloudinaryImageIfExists(recipe.imagenPublicId);
+    }
 
     return res.status(200).json({ message: "Receta eliminada exitosamente" });
   } catch (error) {
