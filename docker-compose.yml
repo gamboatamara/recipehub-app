@@ -8,7 +8,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     volumes:
-      - mongo_data:/data/db
+      - recipehub-mongo-data:/data/db
     networks:
       - recipehub-net
 
@@ -18,21 +18,20 @@ services:
       dockerfile: Dockerfile
     container_name: recipehub-api
     restart: unless-stopped
-    ports:
-  - "127.0.0.1:4000:4000"
-    environment:
-      PORT: 4000
-      MONGO_URI: ${MONGO_URI}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
     depends_on:
       - mongo
+    environment:
+      PORT: ${PORT}
+      MONGO_URI: ${MONGO_URI}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+    ports:
+      - "127.0.0.1:4000:4000"
     networks:
       - recipehub-net
 
 volumes:
-  mongo_data:
-    name: recipehub-mongo-data
+  recipehub-mongo-data:
 
 networks:
   recipehub-net:
