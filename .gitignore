@@ -154,3 +154,10 @@ frontend/dist/
 
 # This project uses pnpm
 package-lock.json
+
+.env
+backend/.env
+frontend/.env
+frontend/.env.production
+node_modules
+dist
