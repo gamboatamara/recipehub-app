@@ -19,7 +19,7 @@ services:
     container_name: recipehub-api
     restart: unless-stopped
     ports:
-      - "4000:4000"
+  - "127.0.0.1:4000:4000"
     environment:
       PORT: 4000
       MONGO_URI: ${MONGO_URI}
