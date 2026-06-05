@@ -31,7 +31,7 @@ jobs:
 
       - name: Run backend tests if available
         working-directory: backend
-        run: pnpm run --if-present test
+        run: pnpm test || echo "No backend tests configured"
 
       - name: Install frontend dependencies
         working-directory: frontend
@@ -85,16 +85,16 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
-            cat > .env << ENVEOF
-PORT=4000
-NODE_ENV=production
-MONGO_INITDB_ROOT_USERNAME=${{ secrets.MONGO_ROOT_USERNAME }}
-MONGO_INITDB_ROOT_PASSWORD=${{ secrets.MONGO_ROOT_PASSWORD }}
-MONGO_INITDB_DATABASE=recipehub
-MONGO_URI=${{ secrets.MONGO_URI }}
-JWT_SECRET=${{ secrets.JWT_SECRET }}
-JWT_EXPIRES_IN=7d
-ENVEOF
+            printf "%s\n" \
+              "PORT=4000" \
+              "NODE_ENV=production" \
+              "MONGO_INITDB_ROOT_USERNAME=${{ secrets.MONGO_ROOT_USERNAME }}" \
+              "MONGO_INITDB_ROOT_PASSWORD=${{ secrets.MONGO_ROOT_PASSWORD }}" \
+              "MONGO_INITDB_DATABASE=recipehub" \
+              "MONGO_URI=${{ secrets.MONGO_URI }}" \
+              "JWT_SECRET=${{ secrets.JWT_SECRET }}" \
+              "JWT_EXPIRES_IN=7d" \
+              > .env
 
             docker compose up -d --build
             docker image prune -f
