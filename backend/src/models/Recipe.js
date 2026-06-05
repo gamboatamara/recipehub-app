@@ -90,6 +90,10 @@ const recipeSchema = new mongoose.Schema(
     imagenUrl: {
       type: String,
       default: ""
+    },
+    imagenPublicId: {
+      type: String,
+      default: ""
     }
   },
   {
