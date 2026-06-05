@@ -40,7 +40,7 @@ jobs:
       - name: Build frontend
         working-directory: frontend
         run: |
-          echo "VITE_API_URL=https://api.recipehubapp.xyz" > .env.production
+          echo "VITE_API_URL=https://api.recipehubapp.xyz/api" > .env.production
           pnpm build
 
       - name: Upload frontend build
