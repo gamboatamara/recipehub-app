@@ -99,6 +99,9 @@ jobs:
               "MONGO_URI=${{ secrets.MONGO_URI }}" \
               "JWT_SECRET=${{ secrets.JWT_SECRET }}" \
               "JWT_EXPIRES_IN=7d" \
+              "CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}" \
+              "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" \
+              "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" \
               > .env
 
             docker compose up -d --build
