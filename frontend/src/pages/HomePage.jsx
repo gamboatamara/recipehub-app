@@ -78,6 +78,7 @@ const HomePage = () => {
   const topRecipes = useMemo(
     () =>
       [...visibleRecipes]
+        .filter((recipe) => Number(recipe.ratingsCount || 0) > 0)
         .sort((first, second) => Number(second.averageRating || 0) - Number(first.averageRating || 0))
         .slice(0, 10),
     [visibleRecipes]

@@ -207,6 +207,13 @@ h2 {
   width: 100%;
 }
 
+.button.full:hover,
+.recipe-card:hover .recipe-card-action {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
 .link-button {
   width: fit-content;
   border: 0;
@@ -509,10 +516,12 @@ textarea:focus {
 }
 
 .recipe-card {
+  display: block;
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--panel);
+  color: inherit;
   box-shadow: 0 8px 30px rgba(52, 40, 24, 0.08);
   transition:
     transform 0.18s ease,
@@ -522,6 +531,11 @@ textarea:focus {
 .recipe-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 16px 38px rgba(52, 40, 24, 0.14);
+}
+
+.recipe-card:focus-visible {
+  outline: 3px solid rgba(134, 201, 52, 0.42);
+  outline-offset: 4px;
 }
 
 .recipe-card img,
