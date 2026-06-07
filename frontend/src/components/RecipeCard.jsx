@@ -7,7 +7,7 @@ const RecipeCard = ({ recipe }) => {
   const authorName = recipe.autorId?.nombre || "Autor";
 
   return (
-    <article className="recipe-card">
+    <Link className="recipe-card" to={`/recetas/${recipe._id}`}>
       <RecipeImage imageUrl={recipe.imagenUrl} label={recipe.categoria} title={recipe.titulo} />
 
       <div className="card-body">
@@ -26,11 +26,11 @@ const RecipeCard = ({ recipe }) => {
           <span>{authorName}</span>
           <span>{rating}</span>
         </div>
-        <Link className="button full" to={`/recetas/${recipe._id}`}>
+        <span className="button full recipe-card-action">
           Ver receta
-        </Link>
+        </span>
       </div>
-    </article>
+    </Link>
   );
 };
 
