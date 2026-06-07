@@ -25,9 +25,14 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   min-width: 320px;
+  overflow-x: hidden;
   background: #f3f5f1;
 }
 
@@ -417,6 +422,7 @@ h2 {
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   padding: 0.2rem 0 0.7rem;
+  scrollbar-width: thin;
 }
 
 .category-tile {
@@ -784,6 +790,30 @@ textarea:focus {
   place-items: start;
 }
 
+@media (max-width: 1040px) {
+  .topbar {
+    grid-template-columns: auto 1fr;
+  }
+
+  .session-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+
+  .home-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  }
+
+  .recipe-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  .detail-header,
+  .content-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 820px) {
   .topbar,
   .toolbar,
@@ -797,18 +827,66 @@ textarea:focus {
 
   .topbar {
     position: static;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+  }
+
+  .brand {
+    font-size: 1.35rem;
+  }
+
+  .nav-links {
+    gap: 0.45rem;
+    overflow-x: auto;
+    padding-bottom: 0.15rem;
+    white-space: nowrap;
+  }
+
+  .nav-links a {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    padding: 0.4rem 0.7rem;
+  }
+
+  .session-actions {
+    justify-content: flex-start;
+  }
+
+  .session-actions .button,
+  .session-actions .user-chip {
+    min-height: 2.35rem;
+  }
+
+  .page {
+    padding: 1.25rem 1rem 3rem;
   }
 
   .home-page {
     width: 100%;
+    padding-bottom: 3rem;
   }
 
   .home-hero {
     min-height: auto;
+    padding: 1.5rem 1rem;
+    background-position: center;
+  }
+
+  .hero-copy {
+    gap: 0.85rem;
+  }
+
+  .hero-copy p:not(.eyebrow) {
+    font-size: 1rem;
+  }
+
+  .hero-search {
+    border-width: 4px;
   }
 
   .hero-feature-card {
     justify-items: start;
+    padding: 1.25rem;
     text-align: left;
   }
 
@@ -818,6 +896,34 @@ textarea:focus {
 
   .hero-search .button {
     border-radius: 0 0 2px 2px;
+  }
+
+  .category-strip {
+    padding: 1rem;
+  }
+
+  .home-section-title,
+  .section-title {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .category-rail {
+    grid-auto-columns: 118px;
+  }
+
+  .category-tile {
+    min-width: 118px;
+    font-size: 0.72rem;
+  }
+
+  .category-tile img {
+    width: 82px;
+    height: 62px;
+  }
+
+  .featured-rail {
+    grid-auto-columns: minmax(230px, 76vw);
   }
 
   .ingredient-row,
@@ -832,7 +938,125 @@ textarea:focus {
   }
 
   .detail-header img,
-  .detail-placeholder {
+  .detail-placeholder,
+  .detail-image {
     min-height: 240px;
+  }
+
+  .comment-form .button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  h1 {
+    font-size: clamp(1.8rem, 11vw, 2.4rem);
+  }
+
+  h2 {
+    font-size: 1.18rem;
+  }
+
+  .topbar .button {
+    flex: 1 1 0;
+  }
+
+  .user-chip {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .home-hero {
+    min-height: 520px;
+    align-content: end;
+  }
+
+  .hero-feature-card {
+    display: none;
+  }
+
+  .difficulty-filter {
+    gap: 0.5rem;
+  }
+
+  .difficulty-filter button,
+  .category-clear {
+    flex: 1 1 auto;
+    padding-inline: 0.75rem;
+  }
+
+  .recipe-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recipe-card {
+    max-width: 360px;
+    width: 100%;
+    margin-inline: auto;
+  }
+
+  .meta-row,
+  .card-footer,
+  .stats-row,
+  .actions-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .tags {
+    gap: 0.45rem;
+  }
+
+  .tags span,
+  .stats-row span,
+  .meta-row span {
+    font-size: 0.82rem;
+  }
+
+  .auth-page {
+    min-height: auto;
+    padding: 1rem;
+  }
+
+  .auth-card,
+  .form-grid,
+  .content-columns article,
+  .comments-section,
+  .profile-header,
+  .comment-card,
+  .detail-header {
+    padding: 1rem;
+  }
+
+  .page.narrow {
+    margin-top: 0;
+    border-radius: 0;
+  }
+
+  .detail-header img,
+  .detail-placeholder,
+  .detail-image {
+    min-height: 210px;
+  }
+
+  .ingredient-list {
+    padding-left: 0;
+  }
+
+  .ingredient-list li {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .step-list {
+    padding-left: 1rem;
+  }
+
+  .profile-header img,
+  .avatar-fallback {
+    width: 72px;
+    height: 72px;
   }
 }
